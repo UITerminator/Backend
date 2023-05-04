@@ -133,7 +133,37 @@ class Building(models.Model):
 
 
 class Comment(models.Model):
-    pass
+    ID = models.IntegerField(primary_key=True)
+    StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
+    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE)
+    CourseID = models.ForeignKey('Course', on_delete=models.CASCADE)
+    # SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
+    star_number = models.IntegerField()
+    like_number = models.IntegerField()
+    dislike_number = models.IntegerField()
+    comment_text = models.CharField(max_length=500)
+
+class Question(models.Model):
+    ID = models.IntegerField(primary_key=True)
+    StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
+    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE)
+    CourseID = models.ForeignKey('Course', on_delete=models.CASCADE)
+    # SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
+    star_number = models.IntegerField()
+    like_number = models.IntegerField()
+    dislike_number = models.IntegerField()
+    Question_text = models.CharField(max_length=500)
+    # answer_list = list()
+
+class Answer(models.Model):
+    ID = models.IntegerField(primary_key=True)
+    StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
+    QuestionID = models.ForeignKey('Question', on_delete=models.CASCADE)
+    star_number = models.IntegerField()
+    like_number = models.IntegerField()
+    dislike_number = models.IntegerField()
+    anwer_text = models.CharField(max_length=500)
+
 
 
 class Vote(models.Model):
@@ -144,5 +174,4 @@ class Choice(models.Model):
     pass
 
 
-class Question(models.Model):
-    pass
+
