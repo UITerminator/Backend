@@ -15,7 +15,7 @@ def get_ElectiveCourses():
     
     i = 0
     while True:    
-        if Ecourses[i]['type'] != "اختیاری":
+        if Ecourses[i]['Type'] != "اختیاری":
             dic = Ecourses[i]
             Ecourses.remove(dic)
             i = i - 1
@@ -31,7 +31,7 @@ def get_GeneralEducationCourses():
     
     i = 0
     while True:    
-        if Gcourses[i]['type'] != "عمومی":
+        if Gcourses[i]['Type'] != "عمومی":
             dic = Gcourses[i]
             Gcourses.remove(dic)
             i = i - 1
@@ -42,12 +42,12 @@ def get_GeneralEducationCourses():
     return Gcourses
 
 def get_CoreCourses():
-    Ccourses = get_courses()
+    Ccourses = get_all_courses()
     dic = {}
     
     i = 0
     while True:    
-        if Ccourses[i]['type'] != "تخصصی":
+        if Ccourses[i]['Type'] != "تخصصی":
             dic = Ccourses[i]
             Ccourses.remove(dic)
             i = i - 1
