@@ -1,5 +1,5 @@
 from .models import *
-
+import copy
 def get_course_section():
 
     sections = Section.objects.all()
@@ -78,6 +78,24 @@ def get_non_collision_courses(code, section):
     print(day)
     print(start_time)
     print(end_time)
+
+    tcourses = []
+    for course in course_list:
+        check = False
+        for sections in course["Sections"]:
+            if sections["Day"] == day:
+                if sections["Start Time"] == start_time or sections["End Time"] == end_time :
+                    if check == False :
+                        tmpc = copy.deepcopy(course)
+                        tcourses.append(tmpc)
+                        tcourses[-1]["Sections"].clear()
+                        check = True
+                    tcourses[-1]["Sections"].append(sections)
+
+    
+    return tcourses
+                
+
     
 
 

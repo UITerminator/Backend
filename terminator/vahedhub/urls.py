@@ -12,4 +12,6 @@ urlpatterns = [
     path('electiveCourses/', views.electiveCourses, name='electiveCourses'),
     path('generalEducationCourses/', views.generalEducationCourses, name='generalEducationCourses'),
     path('coreCourses/', views.coreCourses, name='coreCourses'),
+    path('showTadakhol/', views.showTadakhol, name='showTdadakhol'),
+
 ]

@@ -73,7 +73,7 @@ class InstructorView(ListAPIView):
    
 @api_view()
 def CoursesFullDetailView(request):
-    get_non_collision_courses(3620060, 1)
+    # t=get_non_collision_courses(3620313, 1)
     return Response(get_all_courses())
    
 @api_view()
@@ -87,6 +87,10 @@ def generalEducationCourses(request):
 @api_view()
 def coreCourses(request):
     return Response(get_CoreCourses())
+
+@api_view()
+def showTadakhol(request):
+    return Response(get_non_collision_courses(2822065,1))
 
   
 def indexView(request):
