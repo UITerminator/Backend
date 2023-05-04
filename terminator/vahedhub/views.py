@@ -21,8 +21,10 @@ def get_courses():
                             if (t.ID == st.TimeSlotID_id):
                                 course_list.append({"Name" : c.name,
                                                     "Course ID" : c.ID,
+                                                    "Course Code" : c.code,
                                                     "Section Number" : s.num,
                                                     "Day" : t.day,
+                                                    "type" : c.type,
                                                     "Start Time" : t.start_time,
                                                     "End Time" : t.end_time})
     return course_list
