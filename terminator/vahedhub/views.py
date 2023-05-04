@@ -6,36 +6,16 @@ from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-def get_courses():
-    course_list = []
-    sections = Section.objects.all()
-    courses = Course.objects.all()
-    section_timeslots = Section_TimeSlot.objects.all()
-    timeslots = TimeSlot.objects.all()
-    for c in courses:
-        for s in sections:
-            for st in section_timeslots:
-                for t in timeslots:
-                    if (s.CourseID_id == c.ID):
-                        if (st.SectionID_id == s.ID):
-                            if (t.ID == st.TimeSlotID_id):
-                                course_list.append({"Name" : c.name,
-                                                    "Course ID" : c.ID,
-                                                    "Course Code" : c.code,
-                                                    "Section Number" : s.num,
-                                                    "Day" : t.day,
-                                                    "type" : c.type,
-                                                    "Start Time" : t.start_time,
-                                                    "End Time" : t.end_time})
-    return course_list
-
+import copy
+from .query import *
+         
 def get_ElectiveCourses():
-    Ecourses = get_courses()
+    Ecourses = get_all_courses()
     dic = {}
     
     i = 0
     while True:    
-        if Ecourses[i]['type'] != "اختیاری":
+        if Ecourses[i]['Type'] != "اختیاری":
             dic = Ecourses[i]
             Ecourses.remove(dic)
             i = i - 1
@@ -46,12 +26,12 @@ def get_ElectiveCourses():
     return Ecourses
 
 def get_GeneralEducationCourses():
-    Gcourses = get_courses()
+    Gcourses = get_all_courses()
     dic = {}
     
     i = 0
     while True:    
-        if Gcourses[i]['type'] != "عمومی":
+        if Gcourses[i]['Type'] != "عمومی":
             dic = Gcourses[i]
             Gcourses.remove(dic)
             i = i - 1
@@ -62,12 +42,12 @@ def get_GeneralEducationCourses():
     return Gcourses
 
 def get_CoreCourses():
-    Ccourses = get_courses()
+    Ccourses = get_all_courses()
     dic = {}
     
     i = 0
     while True:    
-        if Ccourses[i]['type'] != "تخصصی":
+        if Ccourses[i]['Type'] != "تخصصی":
             dic = Ccourses[i]
             Ccourses.remove(dic)
             i = i - 1
@@ -90,12 +70,12 @@ class SectionView(ListAPIView):
 class InstructorView(ListAPIView):
    queryset = Instructor.objects.prefetch_related('DepartmentID')
    serializer_class = InstructorSerializer
-  
    
 @api_view()
 def CoursesFullDetailView(request):
-    return Response(get_courses())
-
+    get_non_collision_courses(3620060, 1)
+    return Response(get_all_courses())
+   
 @api_view()
 def electiveCourses(request):
     return Response(get_ElectiveCourses())
@@ -107,6 +87,7 @@ def generalEducationCourses(request):
 @api_view()
 def coreCourses(request):
     return Response(get_CoreCourses())
+
   
 def indexView(request):
     pass;
