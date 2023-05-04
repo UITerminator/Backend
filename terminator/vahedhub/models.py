@@ -50,7 +50,8 @@ class Instructor(models.Model):
     phone_number = models.CharField(max_length=11)
     
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return f'{self.ID}, {self.first_name}, {self.last_name}'
+
 
 
 class Section(models.Model):
@@ -108,7 +109,7 @@ class Course(models.Model):
     type = models.CharField(max_length=20)
     
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.ID} ,{self.name}'
 
 
 class Term(models.Model):
