@@ -5,9 +5,58 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 import copy
 from .query import *
          
+def get_ElectiveCourses():
+    Ecourses = get_all_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Ecourses[i]['type'] != "اختیاری":
+            dic = Ecourses[i]
+            Ecourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Ecourses)):
+            break
+    
+    return Ecourses
+
+def get_GeneralEducationCourses():
+    Gcourses = get_all_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Gcourses[i]['type'] != "عمومی":
+            dic = Gcourses[i]
+            Gcourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Gcourses)):
+            break
+    
+    return Gcourses
+
+def get_CoreCourses():
+    Ccourses = get_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Ccourses[i]['type'] != "تخصصی":
+            dic = Ccourses[i]
+            Ccourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Ccourses)):
+            break
+    
+    return Ccourses
+    
 class CourseView(ListAPIView):
     c = Course.objects.all()
     queryset = c
@@ -26,9 +75,23 @@ class InstructorView(ListAPIView):
 def CoursesFullDetailView(request):
     get_non_collision_courses(3620060, 1)
     return Response(get_all_courses())
-    
+   
+@api_view()
+def electiveCourses(request):
+    return Response(get_ElectiveCourses())
+
+@api_view()
+def generalEducationCourses(request):
+    return Response(get_GeneralEducationCourses())
+
+@api_view()
+def coreCourses(request):
+    return Response(get_CoreCourses())
 
   
+def indexView(request):
+    pass;
+
 def indexView(request):
     pass;
 

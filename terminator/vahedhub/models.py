@@ -50,7 +50,8 @@ class Instructor(models.Model):
     phone_number = models.CharField(max_length=11)
     
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return f'{self.ID}, {self.first_name}, {self.last_name}'
+
 
 
 class Section(models.Model):
@@ -65,7 +66,7 @@ class Section(models.Model):
     gender = models.IntegerField()
     
     def __str__(self):
-        return self.ID
+        return f'{self.ID}, {self.CourseID}, {self.BuildingID}, {self.InstructorID}'
 
 
 
@@ -75,7 +76,7 @@ class Section_TimeSlot(models.Model):
     TimeSlotID = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.ID
+        return f'{self.ID}, {self.TimeSlotID},{self.SectionID}'
 
 class TimeSlot(models.Model):
     ID = models.IntegerField(primary_key=True)
@@ -84,7 +85,7 @@ class TimeSlot(models.Model):
     end_time = models.TimeField()
     
     def __str__(self):
-        return self.ID
+        return f'{self.ID},{self.start_time}, {self.end_time}, {self.day}'
 
 
 class Exam(models.Model):
@@ -95,7 +96,7 @@ class Exam(models.Model):
     room_number = models.IntegerField()
     
     def __str__(self):
-        return self.ID
+        return f'{self.ID},{self.building_id}'
 
 
 class Course(models.Model):
@@ -108,7 +109,7 @@ class Course(models.Model):
     type = models.CharField(max_length=20)
     
     def __str__(self):
-        return self.name
+        return f'{self.ID} ,{self.name}'
 
 
 class Term(models.Model):
@@ -118,7 +119,7 @@ class Term(models.Model):
     end = models.DateField()
     
     def __str(self):
-        return self.name
+        return f'{self.ID}'
 
 
 class Building(models.Model):
@@ -128,7 +129,7 @@ class Building(models.Model):
     name = models.CharField(max_length=100)
     
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class Comment(models.Model):

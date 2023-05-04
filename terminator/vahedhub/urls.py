@@ -8,4 +8,8 @@ urlpatterns = [
     path('instructors/', views.InstructorView.as_view(), name = 'instructor-list'),
     path('sections/', views.SectionView.as_view(), name='section-list'),
     path('coursesfulldetail/', views.CoursesFullDetailView, name='course-full-detail-list'),
+    path('electiveCourses/', views.electiveCourses, name='electiveCourses'),
+    path('electiveCourses/', views.electiveCourses, name='electiveCourses'),
+    path('generalEducationCourses/', views.generalEducationCourses, name='generalEducationCourses'),
+    path('coreCourses/', views.coreCourses, name='coreCourses'),
 ]
