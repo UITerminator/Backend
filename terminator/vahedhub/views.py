@@ -52,6 +52,9 @@ def SelectCourseAndGetCollisionsView(request):
         collision_courses.extend(get_collision_courses(section["CourseCode"], section["SectionNumber"]))
     return Response(collision_courses)
 
+@api_view()
+def formattedJson(request):
+    return Response(newJsonForFront())
 
 def indexView(request):
     pass;

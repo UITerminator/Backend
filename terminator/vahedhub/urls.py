@@ -17,5 +17,6 @@ urlpatterns = [
     path('showComment/', views.showComment.as_view(), name='showComment'),
     path('showQuestion/', views.showQuestion.as_view(), name='showQuestion'),
     path('questions/', views.questions, name='questions'),
+    path('formattedJson/', views.formattedJson, name='formattedJson'),
 
 ]
