@@ -6,7 +6,7 @@ class Student(models.Model):
     DepartmentID = models.ForeignKey('Department', on_delete=models.CASCADE)
     entry_year = models.IntegerField()
     passed_credit = models.IntegerField()
-    GPA = models.IntegerField()
+    GPA = models.FloatField()
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -16,10 +16,10 @@ class Student(models.Model):
     phone_number = models.CharField(max_length=255)
     gender = models.BooleanField()
     date_of_birth = models.DateField()
-    
+    avarage_star = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return self.first_name + ' ' + self.last_name
-    
 
 
 class Takes(models.Model):
@@ -27,7 +27,7 @@ class Takes(models.Model):
     StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
     SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
     grade = models.IntegerField()
-    
+
     def __str__(self):
         return self.ID
 
@@ -36,7 +36,7 @@ class Department(models.Model):
     ID = models.IntegerField(primary_key=True)
     description = models.CharField(max_length=500)
     name = models.CharField(max_length=255)
-    
+
     def __str__(self):
         return self.name
 
@@ -48,10 +48,10 @@ class Instructor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=11)
-    
+    avarage_star = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return f'{self.ID}, {self.first_name}, {self.last_name}'
-
 
 
 class Section(models.Model):
@@ -64,26 +64,26 @@ class Section(models.Model):
     num = models.IntegerField()
     capacity = models.IntegerField()
     gender = models.IntegerField()
-    
+
     def __str__(self):
         return f'{self.ID}, {self.CourseID}, {self.BuildingID}, {self.InstructorID}'
-
 
 
 class Section_TimeSlot(models.Model):
     ID = models.IntegerField(primary_key=True)
     SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
     TimeSlotID = models.ForeignKey('TimeSlot', on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return f'{self.ID}, {self.TimeSlotID},{self.SectionID}'
 
+
 class TimeSlot(models.Model):
     ID = models.IntegerField(primary_key=True)
-    day = models.CharField(max_length = 50)
+    day = models.CharField(max_length=50)
     start_time = models.TimeField()
     end_time = models.TimeField()
-    
+
     def __str__(self):
         return f'{self.ID},{self.start_time}, {self.end_time}, {self.day}'
 
@@ -94,7 +94,7 @@ class Exam(models.Model):
     building_id = models.ForeignKey('Building', on_delete=models.CASCADE)
     # ?????
     room_number = models.IntegerField()
-    
+
     def __str__(self):
         return f'{self.ID},{self.building_id}'
 
@@ -107,7 +107,7 @@ class Course(models.Model):
     description = models.CharField(max_length=255)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20)
-    
+
     def __str__(self):
         return f'{self.ID} ,{self.name}'
 
@@ -117,7 +117,7 @@ class Term(models.Model):
     name = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField()
-    
+
     def __str(self):
         return f'{self.ID}'
 
@@ -127,51 +127,46 @@ class Building(models.Model):
     description = models.CharField(max_length=500)
     address = models.CharField(max_length=200)
     name = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return f'{self.name}'
 
 
 class Comment(models.Model):
     ID = models.IntegerField(primary_key=True)
-    StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
-    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE)
-    CourseID = models.ForeignKey('Course', on_delete=models.CASCADE)
-    # SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
-    star_number = models.IntegerField()
+    StudentID = models.ForeignKey('Student', on_delete=models.CASCADE, null=True)
+    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
+    display_stu = models.BooleanField()
+    display_avg = models.BooleanField()
     like_number = models.IntegerField()
     dislike_number = models.IntegerField()
     comment_text = models.CharField(max_length=500)
 
+    def __str__(self):
+        return f'{self.ID}, {self.StudentID} {self.comment_text}, '
+
+
 class Question(models.Model):
     ID = models.IntegerField(primary_key=True)
     StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
-    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE)
-    CourseID = models.ForeignKey('Course', on_delete=models.CASCADE)
-    # SectionID = models.ForeignKey('Section', on_delete=models.CASCADE)
-    star_number = models.IntegerField()
+    InstructorID = models.ForeignKey('Instructor', on_delete=models.CASCADE,)
     like_number = models.IntegerField()
     dislike_number = models.IntegerField()
     Question_text = models.CharField(max_length=500)
-    # answer_list = list()
+
+    def __str__(self):
+        return f'{self.ID}, {self.StudentID} {self.Question_text}, '
+
 
 class Answer(models.Model):
     ID = models.IntegerField(primary_key=True)
     StudentID = models.ForeignKey('Student', on_delete=models.CASCADE)
     QuestionID = models.ForeignKey('Question', on_delete=models.CASCADE)
-    star_number = models.IntegerField()
     like_number = models.IntegerField()
     dislike_number = models.IntegerField()
-    anwer_text = models.CharField(max_length=500)
+    answer_text = models.CharField(max_length=500)
 
-
-
-class Vote(models.Model):
-    pass
-
-
-class Choice(models.Model):
-    pass
-
+    def __str__(self):
+        return f'{self.ID}, {self.StudentID} {self.answer_text}, '
 
 
