@@ -127,9 +127,10 @@ def get_non_collision_courses(code, section):
         if course["Course Code"] == code:
             for sec in course["Sections"]:
                 if sec["Section Number"] == section:
-                    day = sec["Day"]
-                    start_time = sec["Start Time"]
-                    end_time = sec["End Time"]
+                    for ts in sec["TimeSlots"]:
+                        day = ts["Day"]
+                        start_time = ts["StartTime"]
+                        end_time = ts["EndTime"]
                     break
             else:
                 continue
@@ -139,14 +140,15 @@ def get_non_collision_courses(code, section):
     for course in course_list:
         check = False
         for sections in course["Sections"]:
-            if sections["Day"] == day:
-                if sections["Start Time"] == start_time or sections["End Time"] == end_time:
-                    if check == False:
-                        tmpc = copy.deepcopy(course)
-                        tcourses.append(tmpc)
-                        tcourses[-1]["Sections"].clear()
-                        check = True
-                    tcourses[-1]["Sections"].append(sections)
+            for ts in sections["TimeSlots"]:
+                if ts["Day"] == day:
+                    if ts["StartTime"] == start_time or ts["EndTime"] == end_time:
+                        if check == False:
+                            tmpc = copy.deepcopy(course)
+                            tcourses.append(tmpc)
+                            tcourses[-1]["Sections"].clear()
+                            check = True
+                        tcourses[-1]["Sections"].append(sections)
 
     return tcourses
 
@@ -168,20 +170,4 @@ def get_question_answer():
         question_answer_list.append(question)
 
     return question_answer_list
-#
-# def get_course_section():
-#     sections = Section.objects.all()
-#     courses = Course.objects.all()
-#
-#     course_section_list = []
-#
-#     for c in courses:
-#         course = {"ID": c.ID, "Name": c.name, "Course ID": c.ID, "Course Code": c.code, "Type": c.type,
-#                   "total_credit": c.total_credit, "Practical Credit": c.practical_credit, "Sections": []}
-#         for s in sections:
-#             if s.CourseID_id == c.ID:
-#                 course["Sections"].append(
-#                     {"Section ID": s.ID, "Section Number": s.num, "Instructor ID": s.InstructorID_id})
-#         course_section_list.append(course)
-#
-#     return course_section_list
+
