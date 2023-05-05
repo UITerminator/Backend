@@ -68,6 +68,7 @@ def get_course_section():
                 course["Sections"].append({"Section ID" : s.ID,
                                            "Section Number" : s.num,
                                            "Instructor ID" : s.InstructorID_id,
+                                           "Instructor Name": "",
                                            "TimeSlots" : []})
         
         course_section_list.append(course)
@@ -108,15 +109,14 @@ def get_section_instructor(course_section_time_list):
         for sec in cst["Sections"]:
             for ins in instructors:
                 if ins.ID == sec["Instructor ID"]:
-                    sec["Instructor"] = ins.first_name + ' ' + ins.last_name
+                    sec["Instructor Name"] = ins.first_name + ' ' + ins.last_name
 
     return course_section_time_list
 
 def get_all_courses():
-    #return get_section_instructor(get_section_time(get_section_timeslots(get_course_section())))
-    return get_section_time(get_section_timeslots(get_course_section()))
+    return get_section_time(get_section_timeslots(get_section_instructor(get_course_section())))
 
-def get_non_collision_courses(code, section):
+def get_collision_courses(code, section):
     course_list = get_all_courses()
 
     day = ""

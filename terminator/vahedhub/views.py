@@ -46,8 +46,11 @@ def coreCourses(request):
    
 @api_view(['POST'])
 @parser_classes([JSONParser])
-def SelectCourseAndGetCollisionsView(request):   
-    return Response(get_non_collision_courses(request.data["Code"], request.data["SectionNumber"]))
+def SelectCourseAndGetCollisionsView(request):
+    collision_courses = []
+    for section in request.data["Sections"]:
+        collision_courses.extend(get_collision_courses(section["CourseCode"], section["SectionNumber"]))
+    return Response(collision_courses)
 
 
 def indexView(request):
