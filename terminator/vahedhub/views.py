@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import *
-from .serializers import CourseSerializer, InstructorSerializer, SectionSerializer
+from .serializers import CourseSerializer, InstructorSerializer, SectionSerializer,CommentSerializer,QuestionSerializer
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
@@ -12,7 +12,7 @@ from rest_framework.decorators import parser_classes
 
 import copy
 from .query import *
-  
+
 class CourseView(ListAPIView):
     c = Course.objects.all()
     queryset = c
@@ -22,25 +22,16 @@ class SectionView(ListAPIView):
     s = Section.objects.all()
     queryset = s
     serializer_class = SectionSerializer
-    
+
 class InstructorView(ListAPIView):
    queryset = Instructor.objects.prefetch_related('DepartmentID')
    serializer_class = InstructorSerializer
-   
-# class SelectCourseAndGetCollisionsView(APIView):       
-    # def post(self, request):
-        # serializer = InstructorSerializer(data=request.data)
-        # if serializer.is_valid():
-            # serializer.save()
-            # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-   
 @api_view()
 def CoursesFullDetailView(request):
     # t=get_non_collision_courses(3620313, 1)
     return Response(get_all_courses())
-   
+
 @api_view()
 def electiveCourses(request):
     return Response(get_ElectiveCourses())
@@ -58,7 +49,7 @@ def coreCourses(request):
 def SelectCourseAndGetCollisionsView(request):   
     return Response(get_non_collision_courses(request.data["Code"], request.data["SectionNumber"]))
 
-  
+
 def indexView(request):
     pass;
 
@@ -67,3 +58,20 @@ def indexView(request):
     
     
 
+class showComment(ListAPIView):
+    c = Comment.objects.all()
+    queryset = c
+    serializer_class = CommentSerializer
+
+class showQuestion(ListAPIView):
+    q = Question.objects.all()
+    queryset = q
+    serializer_class = QuestionSerializer
+
+# @api_view()
+# def comments(request):
+#     return Response(get_ElectiveCourses())
+
+@api_view()
+def questions(request):
+    return Response(get_question_answer())
