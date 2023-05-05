@@ -14,7 +14,6 @@ urlpatterns = [
     path('generalEducationCourses/', views.generalEducationCourses, name='generalEducationCourses'),
     path('coreCourses/', views.coreCourses, name='coreCourses'),
     path('selectCourseAndGetCollisions/', views.SelectCourseAndGetCollisionsView),
-    path('showTadakhol/', views.showTadakhol, name='showTdadakhol'),
     path('showComment/', views.showComment.as_view(), name='showComment'),
     path('showQuestion/', views.showQuestion.as_view(), name='showQuestion'),
     path('questions/', views.questions, name='questions'),
