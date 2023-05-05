@@ -5,58 +5,14 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.parsers import JSONParser
+from rest_framework.decorators import parser_classes
 
 import copy
 from .query import *
-         
-def get_ElectiveCourses():
-    Ecourses = get_all_courses()
-    dic = {}
-    
-    i = 0
-    while True:    
-        if Ecourses[i]['Type'] != "اختیاری":
-            dic = Ecourses[i]
-            Ecourses.remove(dic)
-            i = i - 1
-        i = i + 1
-        if (i ==  len(Ecourses)):
-            break
-    
-    return Ecourses
-
-def get_GeneralEducationCourses():
-    Gcourses = get_all_courses()
-    dic = {}
-    
-    i = 0
-    while True:    
-        if Gcourses[i]['Type'] != "عمومی":
-            dic = Gcourses[i]
-            Gcourses.remove(dic)
-            i = i - 1
-        i = i + 1
-        if (i ==  len(Gcourses)):
-            break
-    
-    return Gcourses
-
-def get_CoreCourses():
-    Ccourses = get_all_courses()
-    dic = {}
-    
-    i = 0
-    while True:    
-        if Ccourses[i]['Type'] != "تخصصی":
-            dic = Ccourses[i]
-            Ccourses.remove(dic)
-            i = i - 1
-        i = i + 1
-        if (i ==  len(Ccourses)):
-            break
-    
-    return Ccourses
-    
+  
 class CourseView(ListAPIView):
     c = Course.objects.all()
     queryset = c
@@ -70,6 +26,15 @@ class SectionView(ListAPIView):
 class InstructorView(ListAPIView):
    queryset = Instructor.objects.prefetch_related('DepartmentID')
    serializer_class = InstructorSerializer
+   
+# class SelectCourseAndGetCollisionsView(APIView):       
+    # def post(self, request):
+        # serializer = InstructorSerializer(data=request.data)
+        # if serializer.is_valid():
+            # serializer.save()
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
    
 @api_view()
 def CoursesFullDetailView(request):
@@ -87,10 +52,11 @@ def generalEducationCourses(request):
 @api_view()
 def coreCourses(request):
     return Response(get_CoreCourses())
-
-@api_view()
-def showTadakhol(request):
-    return Response(get_non_collision_courses(2822065,1))
+   
+@api_view(['POST'])
+@parser_classes([JSONParser])
+def SelectCourseAndGetCollisionsView(request):   
+    return Response(get_non_collision_courses(request.data["Code"], request.data["SectionNumber"]))
 
   
 def indexView(request):
@@ -98,4 +64,6 @@ def indexView(request):
 
 def indexView(request):
     pass;
+    
+    
 

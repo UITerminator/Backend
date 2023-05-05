@@ -20,7 +20,11 @@ class Student(models.Model):
     def __str__(self):
         return self.first_name + ' ' + self.last_name
     
+class SelectedCourses(models.Model):
+    ID = models.IntegerField(primary_key=True)
+    StudentID = models.ForeignKey('Student', on_delete = models.CASCADE)
 
+    
 
 class Takes(models.Model):
     ID = models.IntegerField(primary_key=True)

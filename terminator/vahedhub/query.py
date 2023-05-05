@@ -8,22 +8,32 @@ def get_course_section():
     course_section_list = []
     
     for c in courses:
-        course = {"ID": c.ID, "Name" : c.name, "Course ID" : c.ID, "Course Code" : c.code, "Type" : c.type,                  "total_credit" : c.total_credit,"Practical Credit" : c.practical_credit ,"Sections": []}
+        course = {"ID": c.ID, "Name" : c.name,
+                  "Course ID" : c.ID,
+                  "Course Code" : c.code,
+                  "Type" : c.type,
+                  "total_credit" : c.total_credit,
+                  "Practical Credit" : c.practical_credit ,
+                  "Sections": []}
         for s in sections:
             if s.CourseID_id == c.ID:
-                course["Sections"].append({"Section ID" : s.ID, "Section Number" : s.num, "Instructor ID" : s.InstructorID_id})
+                course["Sections"].append({"Section ID" : s.ID,
+                                           "Section Number" : s.num,
+                                           "Instructor ID" : s.InstructorID_id,
+                                           "TimeSlots" : []})
+        
         course_section_list.append(course)
                                            
     return course_section_list
-    
+        
 def get_section_timeslots(course_section_list):
     section_timeslots = Section_TimeSlot.objects.all()
     
     for cs in course_section_list:
-        for st in section_timeslots:
-            for s in cs["Sections"]:
-                if s["Section ID"] == st.SectionID_id:
-                    s["TimeSlot"] = st.TimeSlotID_id
+        for s in cs["Sections"]:
+            for st in section_timeslots:
+                if st.SectionID_id == s["Section ID"]:
+                    s["TimeSlots"].append({"TimeSlotID" : st.TimeSlotID_id})
     
     return course_section_list
     
@@ -31,12 +41,13 @@ def get_section_time(course_section_timeslot_list):
     timeslots = TimeSlot.objects.all()
     
     for cst in course_section_timeslot_list:
-        for t in timeslots:
-            for s in cst["Sections"]:
-                if t.ID == s["TimeSlot"]:
-                    s["Day"] = t.day
-                    s["Start Time"] = t.start_time
-                    s["End Time"] = t.end_time
+        for s in cst["Sections"]:
+            for st in s["TimeSlots"]:
+                for t in timeslots:
+                    if st["TimeSlotID"] == t.ID:
+                        st["Day"] = t.day
+                        st["StartTime"] = t.start_time
+                        st["EndTime"] = t.end_time
                     
     return course_section_timeslot_list
     
@@ -51,11 +62,9 @@ def get_section_instructor(course_section_time_list):
     
     return course_section_time_list
 
-                
-
 def get_all_courses():
-    return get_section_instructor(get_section_time(get_section_timeslots(get_course_section())))
-    
+    #return get_section_instructor(get_section_time(get_section_timeslots(get_course_section())))
+    return get_section_time(get_section_timeslots(get_course_section()))
 def get_non_collision_courses(code, section):
     course_list = get_all_courses()
     
@@ -75,9 +84,6 @@ def get_non_collision_courses(code, section):
                 continue
             break
         
-    print(day)
-    print(start_time)
-    print(end_time)
 
     tcourses = []
     for course in course_list:
@@ -94,7 +100,54 @@ def get_non_collision_courses(code, section):
 
     
     return tcourses
-                
+
+def get_ElectiveCourses():
+    Ecourses = get_all_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Ecourses[i]['Type'] != "اختیاری":
+            dic = Ecourses[i]
+            Ecourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Ecourses)):
+            break
+    
+    return Ecourses
+
+def get_GeneralEducationCourses():
+    Gcourses = get_all_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Gcourses[i]['Type'] != "عمومی":
+            dic = Gcourses[i]
+            Gcourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Gcourses)):
+            break
+    
+    return Gcourses
+
+def get_CoreCourses():
+    Ccourses = get_all_courses()
+    dic = {}
+    
+    i = 0
+    while True:    
+        if Ccourses[i]['Type'] != "تخصصی":
+            dic = Ccourses[i]
+            Ccourses.remove(dic)
+            i = i - 1
+        i = i + 1
+        if (i ==  len(Ccourses)):
+            break
+    
+    return Ccourses
 
     
 

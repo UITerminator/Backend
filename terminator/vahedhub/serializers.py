@@ -17,5 +17,5 @@ class SectionSerializer(serializers.ModelSerializer):
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
-        fields = '__all__' 
-        
+        fields = '__all__'
+ 
