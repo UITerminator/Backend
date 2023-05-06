@@ -17,5 +17,7 @@ urlpatterns = [
     path('showComment/', views.showComment.as_view(), name='showComment'),
     path('showQuestion/', views.showQuestion.as_view(), name='showQuestion'),
     path('questions/', views.questions, name='questions'),
+    path('users/', views.UserList.as_view()),
+    path('studentSelectedCourses/<int:studentID>', views.StudentSelectedCourses),
 
 ]

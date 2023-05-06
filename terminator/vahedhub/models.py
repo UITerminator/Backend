@@ -1,9 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Student(models.Model):
     ID = models.IntegerField(primary_key=True)
     DepartmentID = models.ForeignKey('Department', on_delete=models.CASCADE)
+    UserID = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
+    student_id = models.IntegerField()
     entry_year = models.IntegerField()
     passed_credit = models.IntegerField()
     GPA = models.FloatField()
@@ -25,7 +28,10 @@ class Student(models.Model):
 class SelectedCourses(models.Model):
     ID = models.IntegerField(primary_key=True)
     StudentID = models.ForeignKey('Student', on_delete = models.CASCADE)
-
+    selected_sections = models.TextField()
+    
+    def __str__(self):
+        return f'{self.ID}, {self.StudentID}'
 
     
 
@@ -36,7 +42,7 @@ class Takes(models.Model):
     grade = models.IntegerField()
 
     def __str__(self):
-        return self.ID
+        return f'{self.ID}, {self.StudentID}'
 
 
 class Department(models.Model):
