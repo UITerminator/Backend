@@ -1,5 +1,7 @@
 from .models import *
 import copy
+import datetime
+
 
 def get_ElectiveCourses():
     Ecourses = get_all_courses()
@@ -12,10 +14,11 @@ def get_ElectiveCourses():
             Ecourses.remove(dic)
             i = i - 1
         i = i + 1
-        if (i ==  len(Ecourses)):
+        if (i == len(Ecourses)):
             break
 
     return Ecourses
+
 
 def get_GeneralEducationCourses():
     Gcourses = get_all_courses()
@@ -28,10 +31,11 @@ def get_GeneralEducationCourses():
             Gcourses.remove(dic)
             i = i - 1
         i = i + 1
-        if (i ==  len(Gcourses)):
+        if (i == len(Gcourses)):
             break
 
     return Gcourses
+
 
 def get_CoreCourses():
     Ccourses = get_all_courses()
@@ -44,10 +48,11 @@ def get_CoreCourses():
             Ccourses.remove(dic)
             i = i - 1
         i = i + 1
-        if (i ==  len(Ccourses)):
+        if (i == len(Ccourses)):
             break
 
     return Ccourses
+
 
 def get_course_section():
     sections = Section.objects.all()
@@ -56,25 +61,26 @@ def get_course_section():
     course_section_list = []
 
     for c in courses:
-        course = {"ID": c.ID, "Name" : c.name,
-                  "Course ID" : c.ID,
-                  "Course Code" : c.code,
-                  "Type" : c.type,
-                  "total_credit" : c.total_credit,
-                  "Practical Credit" : c.practical_credit ,
+        course = {"ID": c.ID, "Name": c.name,
+                  "Course ID": c.ID,
+                  "Course Code": c.code,
+                  "Type": c.type,
+                  "total_credit": c.total_credit,
+                  "Practical Credit": c.practical_credit,
                   "Sections": []}
         for s in sections:
             if s.CourseID_id == c.ID:
-                course["Sections"].append({"Section ID" : s.ID,
-                                           "Section Number" : s.num,
-                                           "Instructor ID" : s.InstructorID_id,
+                course["Sections"].append({"Section ID": s.ID,
+                                           "Section Number": s.num,
+                                           "Instructor ID": s.InstructorID_id,
                                            "Instructor Name": "",
-                                           "TimeSlots" : []})
-        
+                                           "TimeSlots": []})
+
         course_section_list.append(course)
 
     return course_section_list
-    
+
+
 def get_section_timeslots(course_section_list):
     section_timeslots = Section_TimeSlot.objects.all()
 
@@ -82,8 +88,8 @@ def get_section_timeslots(course_section_list):
         for s in cs["Sections"]:
             for st in section_timeslots:
                 if st.SectionID_id == s["Section ID"]:
-                    s["TimeSlots"].append({"TimeSlotID" : st.TimeSlotID_id})
-    
+                    s["TimeSlots"].append({"TimeSlotID": st.TimeSlotID_id})
+
     return course_section_list
 
 
@@ -98,7 +104,7 @@ def get_section_time(course_section_timeslot_list):
                         st["Day"] = t.day
                         st["StartTime"] = t.start_time
                         st["EndTime"] = t.end_time
-                    
+
     return course_section_timeslot_list
 
 
@@ -109,12 +115,15 @@ def get_section_instructor(course_section_time_list):
         for sec in cst["Sections"]:
             for ins in instructors:
                 if ins.ID == sec["Instructor ID"]:
-                    sec["Instructor Name"] = ins.first_name + ' ' + ins.last_name
+                    sec["Instructor Name"] = ins.first_name + \
+                        ' ' + ins.last_name
 
     return course_section_time_list
 
+
 def get_all_courses():
     return get_section_time(get_section_timeslots(get_section_instructor(get_course_section())))
+
 
 def get_collision_courses(code, section):
     course_list = get_all_courses()
@@ -152,6 +161,7 @@ def get_collision_courses(code, section):
 
     return tcourses
 
+
 def get_question_answer():
     question = Question.objects.all()
     answer = Answer.objects.all()
@@ -171,3 +181,95 @@ def get_question_answer():
 
     return question_answer_list
 
+
+def newJsonForFront():
+    courselist = get_all_courses()
+    days = {
+        0: "saturday",
+        1: "sunday",
+        2: "monday",
+        3: "tuesday",
+        4: "wednesday",
+    }
+    rev_days = {
+        "saturday": 0,
+        "sunday": 1,
+        "monday": 2,
+        "tuesday": 3,
+        "wednesday": 4,
+    }
+    hours = {
+        0: "08:00:00",
+        1: "09:00:00",
+        2: "10:00:00",
+        3: "11:00:00",
+        4: "12:00:00",
+        5: "13:00:00",
+        6: "14:00:00",
+        7: "15:00:00",
+        8: "16:00:00",
+        9: "17:00:00",
+        10: "18:00:00",
+    }
+    rev_hours = {
+        "08:00:00": 0,
+        "09:00:00": 1,
+        "10:00:00": 2,
+        "11:00:00": 3,
+        "12:00:00": 4,
+        "13:00:00": 5,
+        "14:00:00": 6,
+        "15:00:00": 7,
+        "16:00:00": 8,
+        "17:00:00": 9,
+        "18:00:00": 10,
+    }
+    newJson = []
+
+    for i in range(5):
+        temp = {"Day": days[i], "Times": []}
+        for j in range(10):
+            time = {"Start Time": hours[j],
+                    "End Time": hours[j+1], "Sections": []}
+            temp["Times"].append(time)
+        newJson.append(temp)
+
+    for course in courselist:
+        for section in course["Sections"]:
+
+            for ts in section["TimeSlots"]:
+                temp_section = {
+                    "Name": course["Name"], "Course ID": course["Course ID"], "Course Code": course["Course Code"], "Type": course["Type"], "total_credit": course["total_credit"], "Practical Credit": course["Practical Credit"],
+                    "Instructor Name": section["Instructor Name"], "Section ID": section["Section ID"], "Section Number": section["Section Number"], "Instructor ID": section["Instructor ID"], "TimeSlotID": ts["TimeSlotID"], "Day": ts["Day"], "StartTime": ts["StartTime"], "EndTime": ts["EndTime"]}
+                if int(str(temp_section["EndTime"])[:2]) - int(str(temp_section["StartTime"])[:2]) == 1:
+                    newJson[rev_days[ts["Day"]]
+                            ]["Times"][rev_hours[str(ts["StartTime"])]]["Sections"].append(temp_section)
+
+                else:
+                    endtime = datetime.time(
+                        int(str(temp_section["EndTime"])[:2]) - 1, 0)
+                    temp_section["EndTime"] = endtime
+
+                    newsection=copy.deepcopy(temp_section)
+                    del newsection["Day"]
+                    del newsection["StartTime"]
+                    del newsection["EndTime"]
+                    newJson[rev_days[temp_section["Day"]]]["Times"][rev_hours[str(
+                        temp_section["StartTime"])]]["Sections"].append(copy.deepcopy(newsection))
+
+                    starttime = datetime.time(
+                        int(str(temp_section["StartTime"])[:2])+1, 0)
+                    temp_section["StartTime"] = starttime
+
+                    endtime = datetime.time(
+                        int(str(temp_section["EndTime"])[:2])+1, 0)
+                    temp_section["EndTime"] = endtime
+
+                    newsection=copy.deepcopy(temp_section)
+                    del newsection["Day"]
+                    del newsection["StartTime"]
+                    del newsection["EndTime"]
+                    newJson[rev_days[temp_section["Day"]]
+                            ]["Times"][rev_hours[str(temp_section["StartTime"])]]["Sections"].append(copy.deepcopy(newsection))
+
+    return newJson
