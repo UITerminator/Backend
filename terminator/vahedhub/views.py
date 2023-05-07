@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import parser_classes
+from rest_framework import status
 
 from rest_framework.permissions import IsAdminUser
 from .permissions import *
@@ -35,6 +36,10 @@ class InstructorView(ListAPIView):
 @api_view(['GET'])
 def CoursesFullDetailView(request):
     return Response(get_all_courses())
+    
+@api_view(['GET'])
+def formattedJson(request):
+    return Response(newJsonForFront())
 
 @api_view(['GET'])
 def electiveCourses(request):
@@ -51,14 +56,19 @@ def coreCourses(request):
 @api_view(['GET'])
 def StudentSelectedCourses(request, studentID):
     student = Student.objects.get(student_id = studentID)
+    
+    if student.UserID_id != request.user.id:
+        return Response(status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        
     selected_course = SelectedCourses.objects.get(StudentID = student.ID)
     return Response(selected_course.selected_sections)
    
 @api_view(['POST'])
 @parser_classes([JSONParser])
 def SelectCourseAndGetCollisionsView(request):
-    student = Student.objects.get(student_id = request.data["StudentID"])
-       
+    #student = Student.objects.get(student_id = request.data["StudentID"])
+    student = Student.objects.get(UserID_id = request.user.id)
+        
     selected_course = SelectedCourses.objects.get(StudentID = student.ID)
     
     selected_course.selected_sections = request.data["Sections"]
@@ -70,9 +80,6 @@ def SelectCourseAndGetCollisionsView(request):
         collision_courses.extend(get_collision_courses(section["CourseCode"], section["SectionNumber"]))
     return Response(collision_courses)
 
-@api_view()
-def formattedJson(request):
-    return Response(newJsonForFront())
 
 def indexView(request):
     pass;

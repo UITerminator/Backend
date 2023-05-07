@@ -5,24 +5,20 @@ from django.contrib.auth.models import User
 class Student(models.Model):
     ID = models.IntegerField(primary_key=True)
     DepartmentID = models.ForeignKey('Department', on_delete=models.CASCADE)
-    UserID = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
+    UserID = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     student_id = models.IntegerField()
     entry_year = models.IntegerField()
     passed_credit = models.IntegerField()
     GPA = models.FloatField()
-    username = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
     gender = models.BooleanField()
     date_of_birth = models.DateField()
     avarage_star = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        user = User.objects.get(id = self.UserID_id)
+        return user.first_name + ' ' + user.last_name
 
     
 class SelectedCourses(models.Model):
