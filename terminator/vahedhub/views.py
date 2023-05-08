@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import *
 from .serializers import *
+from django.http import HttpResponse,JsonResponse
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view
@@ -80,6 +81,38 @@ def SelectCourseAndGetCollisionsView(request):
         collision_courses.extend(get_collision_courses(section["CourseCode"], section["SectionNumber"]))
     return Response(collision_courses)
 
+@api_view(['POST'])
+@parser_classes([JSONParser])
+def createQuestion(request):
+    #student = Student.objects.get(student_id = request.data["StudentID"])
+    try:
+        student = Student.objects.get(UserID_id = request.user.id)
+        queText = request.data["Question"]
+        InsID = request.data["InstructorID"]
+        question = Question(like_number=0,dislike_number=0,Question_text=queText,InstructorID_id=InsID,StudentID_id=student.ID)
+        question.save()
+        return Response("Success")
+    except:
+        return Response("Failed",status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@parser_classes([JSONParser])
+def likeOrDislike(request):
+    #student = Student.objects.get(student_id = request.data["StudentID"])
+    try:
+        question = Question.objects.get(ID = request.data["QuestionID"])
+        if request.data["Like"]:
+            question.like_number+=1
+        else :
+            question.dislike_number+=1
+
+        question.save()
+        return Response("Success")
+    except:
+        return Response("Failed",status=status.HTTP_400_BAD_REQUEST)
+
+ 
 
 def indexView(request):
     pass;
