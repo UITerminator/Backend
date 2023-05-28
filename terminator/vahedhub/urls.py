@@ -21,5 +21,6 @@ urlpatterns = [
     path('studentSelectedCourses/<int:studentID>/', views.StudentSelectedCourses),
     path('formattedJson/', views.formattedJson, name='formattedJson'),
     path('createQuestion/', views.createQuestion, name='formattedJson'),
-    path('likeOrDislike/', views.likeOrDislike, name='likeOrDislike'),
+    path('comment/', views.comment, name='comment'),
+    path('likeQuestions', views.likeQuestions, name='likeQuestions'),
 ]
