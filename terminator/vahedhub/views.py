@@ -143,6 +143,19 @@ def comment(request):
     except:
         return Response("Failed", status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def instructorComments(request, instructorID):
+    try:
+        instructor = Instructor.objects.get(ID=instructorID)
+        if Comment.objects.filter(InstructorID_id=instructor.ID).exists():
+            queryset = Comment.objects.filter(InstructorID_id=instructor.ID)
+            data = list(queryset.values())
+            return Response(data)
+        else:
+            raise Exception
+    except:
+        return Response("Failed", status=status.HTTP_400_BAD_REQUEST)
+
 
 def indexView(request):
     pass

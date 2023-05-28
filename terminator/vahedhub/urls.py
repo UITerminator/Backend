@@ -23,4 +23,5 @@ urlpatterns = [
     path('createQuestion/', views.createQuestion, name='formattedJson'),
     path('comment/', views.comment, name='comment'),
     path('likeQuestions', views.likeQuestions, name='likeQuestions'),
+    path('instructorComments/<int:instructorID>', views.instructorComments, name='instructorComments'),
 ]
