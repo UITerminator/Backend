@@ -24,4 +24,5 @@ urlpatterns = [
     path('comment/', views.comment, name='comment'),
     path('likeQuestions', views.likeQuestions, name='likeQuestions'),
     path('instructorComments/<int:instructorID>', views.instructorComments, name='instructorComments'),
+    path('likeComments', views.likeComments, name='likeComments'),
 ]

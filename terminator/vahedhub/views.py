@@ -155,6 +155,21 @@ def instructorComments(request, instructorID):
             raise Exception
     except:
         return Response("Failed", status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@parser_classes([JSONParser])
+def likeComments(request):
+    try:
+        comment = Comment.objects.get(ID=request.data["CommentID"])
+        if request.data["Like"]:
+            comment.like_number += 1
+        else:
+            comment.dislike_number += 1
+
+        comment.save()
+        return Response("Success")
+    except:
+        return Response("Failed", status=status.HTTP_400_BAD_REQUEST)
 
 
 def indexView(request):
