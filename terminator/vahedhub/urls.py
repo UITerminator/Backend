@@ -20,4 +20,9 @@ urlpatterns = [
     path('users/', views.UserList.as_view()),
     path('studentSelectedCourses/<int:studentID>/', views.StudentSelectedCourses),
     path('formattedJson/', views.formattedJson, name='formattedJson'),
+    path('createQuestion/', views.createQuestion, name='formattedJson'),
+    path('comment/', views.comment, name='comment'),
+    path('likeQuestions', views.likeQuestions, name='likeQuestions'),
+    path('instructorComments/<int:instructorID>', views.instructorComments, name='instructorComments'),
+    path('likeComments', views.likeComments, name='likeComments'),
 ]
