@@ -66,7 +66,6 @@ def StudentSelectedCourses(request, studentID):
 @api_view(['POST'])
 @parser_classes([JSONParser])
 def SelectCourseAndGetCollisionsView(request):
-    #student = Student.objects.get(student_id = request.data["StudentID"])
     student = Student.objects.get(UserID_id = request.user.id)
         
     selected_course = SelectedCourses.objects.get(StudentID = student.ID)
