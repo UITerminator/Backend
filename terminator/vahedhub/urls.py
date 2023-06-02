@@ -6,7 +6,7 @@ app_name = 'vahedhub'
 urlpatterns = [
     path('', views.indexView, name='index'),
     path('courses/', views.CourseView.as_view(), name='course-list'),
-    path('instructors/', views.InstructorView.as_view(), name='instructor-list'),
+    #path('instructors/', views.InstructorView.as_view(), name='instructor-list'),
     path('sections/', views.SectionView.as_view(), name='section-list'),
     path('coursesfulldetail/', views.CoursesFullDetailView, name='course-full-detail-list'),
     path('electiveCourses/', views.electiveCourses, name='electiveCourses'),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('comment/', views.comment, name='comment'),
     path('likeQuestions', views.likeQuestions, name='likeQuestions'),
     path('instructorComments/<int:instructorID>', views.instructorComments, name='instructorComments'),
+    path('instructors/', views.instructors, name='getComments'),
     path('likeComments', views.likeComments, name='likeComments'),
 ]

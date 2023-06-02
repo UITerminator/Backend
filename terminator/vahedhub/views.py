@@ -13,7 +13,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.decorators import parser_classes
 from rest_framework import status
 
-from rest_framework.permissions import IsAdminUser
+#from rest_framework.permissions import IsAdminUser
 from .permissions import *
 
 import copy
@@ -149,12 +149,27 @@ def instructorComments(request, instructorID):
         if Comment.objects.filter(InstructorID_id=instructor.ID).exists():
             queryset = Comment.objects.filter(InstructorID_id=instructor.ID)
             data = list(queryset.values())
+            data.append(instructor.first_name)
             return Response(data)
         else:
             raise Exception
     except:
         return Response("Failed", status=status.HTTP_400_BAD_REQUEST)
-    
+        
+@api_view(['GET'])
+def instructors(request):
+    data = list((Instructor.objects.all()).values())
+    for instructor in data:
+        department = Department.objects.get(ID=instructor["DepartmentID_id"])
+        instructor["Dapertment Name"] = department.name
+        comments = list((Comment.objects.filter(InstructorID = instructor["ID"])).values())
+        students = set()
+        for comment in comments:
+            students.add(comment["StudentID_id"])
+        instructor["Number of voters"] = len(students)
+        
+    return Response(data)
+
 @api_view(['POST'])
 @parser_classes([JSONParser])
 def likeComments(request):
